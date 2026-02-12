@@ -30,10 +30,18 @@ echo "Python 3 is installed."
 # Check if pip is installed
 if ! command -v pip3 &> /dev/null; then
     echo "pip3 is not installed. Installing..."
-    python3 -m ensurepip --upgrade
+    sudo apt update
+    sudo apt install -y python3-pip
 fi
 
 echo "pip3 is installed."
+
+# Check if git is installed
+if ! command -v git &> /dev/null; then
+    echo "Git is not installed. Installing..."
+    sudo apt update
+    sudo apt install -y git
+fi
 
 # Clone the repository if not already in it
 if [ ! -f "setup-wizard.py" ]; then
@@ -44,19 +52,24 @@ else
     echo "Already in the repository directory."
 fi
 
-# Install colorama for the setup wizard
+# Create a virtual environment
+echo "Creating virtual environment..."
+python3 -m venv venv
+source venv/bin/activate
+
+# Install colorama for the setup wizard in the virtual environment
 echo "Installing colorama for setup wizard..."
-pip3 install colorama
+pip install colorama
 
 echo "Starting setup wizard..."
-python3 setup-wizard.py
+python setup-wizard.py
 
 echo "==========================================="
 echo "    Installation Complete!"
 echo "==========================================="
 echo ""
 echo "To start the monitor manually:"
-echo "  python3 tracker_scheduler.py"
+echo "  cd damie-tracker-monitor && source venv/bin/activate && python tracker_scheduler.py"
 echo ""
 echo "For systemd service (Ubuntu):"
 echo "  sudo cp damie-monitor.service /etc/systemd/system/"
