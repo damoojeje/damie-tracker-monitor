@@ -39,25 +39,45 @@ def print_header():
     print("╚" + "═"*60 + "╝")
     print(Style.RESET_ALL)
 
-def get_user_input(prompt, default=None, password=False):
-    """Get user input with optional default value"""
+def get_user_input(prompt, default=None, password=False, validate_func=None):
+    """Get user input with optional default value and validation"""
     if default:
         prompt = f"{prompt} (default: {default}): "
     else:
         prompt = f"{prompt}: "
     
-    if password:
-        import getpass
-        return getpass.getpass(prompt)
-    else:
-        user_input = input(prompt)
-        return user_input if user_input else default
+    while True:
+        if password:
+            import getpass
+            user_input = getpass.getpass(prompt)
+        else:
+            user_input = input(prompt)
+        
+        user_input = user_input if user_input else default
+        
+        if validate_func:
+            if validate_func(user_input):
+                return user_input
+            else:
+                print(Fore.RED + "Invalid input. Please try again." + Style.RESET_ALL)
+        else:
+            return user_input
 
 def create_virtual_env():
     """Create and activate virtual environment"""
     print(Fore.YELLOW + "\nSetting up virtual environment..." + Style.RESET_ALL)
     
     venv_path = Path("./venv")
+    
+    # Check if venv already exists and ask if user wants to overwrite
+    if venv_path.exists():
+        overwrite = get_user_input("Virtual environment already exists. Overwrite it?", "no").lower() in ['yes', 'y', 'true', '1']
+        if not overwrite:
+            return str(venv_path), None  # Return existing path
+        else:
+            import shutil
+            print(Fore.YELLOW + "Removing existing virtual environment..." + Style.RESET_ALL)
+            shutil.rmtree(venv_path)
     
     try:
         subprocess.check_call([sys.executable, "-m", "venv", str(venv_path)])
@@ -84,7 +104,11 @@ def install_requirements(venv_path):
         pip_path = Path(venv_path) / "bin" / "pip"
     
     try:
-        subprocess.check_call([str(pip_path), "install", "-r", "requirements.txt"])
+        # Use --break-system-packages flag for Ubuntu systems
+        if platform.system() == "Linux":
+            subprocess.check_call([str(pip_path), "install", "--break-system-packages", "-r", "requirements.txt"])
+        else:
+            subprocess.check_call([str(pip_path), "install", "-r", "requirements.txt"])
         print(Fore.GREEN + "✓ Packages installed successfully" + Style.RESET_ALL)
         return True
     except subprocess.CalledProcessError as e:
@@ -197,7 +221,16 @@ def configure_schedule():
     if schedule_choice in intervals:
         minutes = intervals[schedule_choice]
     else:
-        minutes = int(get_user_input("Enter custom interval in minutes", "60"))
+        # Validate that the custom input is a number
+        def validate_minutes(value):
+            try:
+                int(value)
+                return True
+            except ValueError:
+                return False
+        
+        minutes_str = get_user_input("Enter custom interval in minutes", "60", validate_func=validate_minutes)
+        minutes = int(minutes_str)
     
     return {
         'interval_minutes': minutes
@@ -255,6 +288,14 @@ def configure_service():
 def save_config(config):
     """Save configuration to file"""
     config_path = Path("config.json")
+    
+    # Check if config file already exists and ask if user wants to overwrite
+    if config_path.exists():
+        overwrite = get_user_input("Configuration file already exists. Overwrite it?", "yes").lower() in ['yes', 'y', 'true', '1']
+        if not overwrite:
+            print(Fore.YELLOW + "Skipping configuration save." + Style.RESET_ALL)
+            return
+    
     with open(config_path, 'w') as f:
         json.dump(config, f, indent=2)
     print(Fore.GREEN + f"✓ Configuration saved to {config_path}" + Style.RESET_ALL)
