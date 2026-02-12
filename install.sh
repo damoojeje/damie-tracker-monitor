@@ -43,30 +43,36 @@ if ! command -v git &> /dev/null; then
     sudo apt install -y git
 fi
 
-# Check if we're already in the repository directory
-if [ -f "setup-wizard.py" ]; then
-    echo "Already in the repository directory."
+# Determine the parent directory where the script is located
+SCRIPT_DIR="$(pwd)"
+
+# Check if we're already in the repository directory by checking for setup-wizard.py in the current directory
+if [ -f "$SCRIPT_DIR/setup-wizard.py" ] && [ -f "$SCRIPT_DIR/README.md" ]; then
+    echo "Already in the repository directory ($SCRIPT_DIR)."
+    REPO_DIR="$SCRIPT_DIR"
 else
+    REPO_DIR="$SCRIPT_DIR/damie-tracker-monitor"
+    
     # Check if the damie-tracker-monitor directory already exists
-    if [ -d "damie-tracker-monitor" ]; then
-        echo "damie-tracker-monitor directory already exists."
+    if [ -d "$REPO_DIR" ]; then
+        echo "damie-tracker-monitor directory already exists at: $REPO_DIR"
         read -p "Do you want to remove the existing directory and reinstall? (y/N): " -n 1 -r overwrite
         echo
         if [[ $overwrite =~ ^[Yy]$ ]]; then
             echo "Removing existing directory..."
-            rm -rf damie-tracker-monitor
+            rm -rf "$REPO_DIR"
             echo "Cloning DAMIE Tracker Monitor repository..."
-            git clone https://github.com/damoojeje/damie-tracker-monitor.git
-            cd damie-tracker-monitor
+            git clone https://github.com/damoojeje/damie-tracker-monitor.git "$REPO_DIR"
         else
-            echo "Changing to existing directory..."
-            cd damie-tracker-monitor
+            echo "Using existing directory..."
         fi
     else
         echo "Cloning DAMIE Tracker Monitor repository..."
-        git clone https://github.com/damoojeje/damie-tracker-monitor.git
-        cd damie-tracker-monitor
+        git clone https://github.com/damoojeje/damie-tracker-monitor.git "$REPO_DIR"
     fi
+    
+    # Change to the repository directory
+    cd "$REPO_DIR"
 fi
 
 # Create a virtual environment
@@ -76,7 +82,7 @@ source venv/bin/activate
 
 # Install colorama for the setup wizard in the virtual environment
 echo "Installing colorama for setup wizard..."
-pip install colorama
+pip install --break-system-packages colorama
 
 echo "Starting setup wizard..."
 python setup-wizard.py
