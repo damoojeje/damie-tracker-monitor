@@ -53,7 +53,9 @@ def get_user_input(prompt, default=None, password=False, validate_func=None):
         else:
             user_input = input(prompt)
         
-        user_input = user_input if user_input else default
+        # Use default if input is empty
+        if not user_input and default is not None:
+            user_input = default
         
         if validate_func:
             if validate_func(user_input):
@@ -226,11 +228,16 @@ def configure_schedule():
             try:
                 int(value)
                 return True
-            except ValueError:
+            except (ValueError, TypeError):
                 return False
         
-        minutes_str = get_user_input("Enter custom interval in minutes", "60", validate_func=validate_minutes)
-        minutes = int(minutes_str)
+        while True:
+            minutes_str = get_user_input("Enter custom interval in minutes", "60")
+            if validate_minutes(minutes_str):
+                minutes = int(minutes_str)
+                break
+            else:
+                print(Fore.RED + "Invalid input. Please enter a valid number." + Style.RESET_ALL)
     
     return {
         'interval_minutes': minutes
