@@ -43,13 +43,30 @@ if ! command -v git &> /dev/null; then
     sudo apt install -y git
 fi
 
-# Clone the repository if not already in it
-if [ ! -f "setup-wizard.py" ]; then
-    echo "Cloning DAMIE Tracker Monitor repository..."
-    git clone https://github.com/damoojeje/damie-tracker-monitor.git
-    cd damie-tracker-monitor
-else
+# Check if we're already in the repository directory
+if [ -f "setup-wizard.py" ]; then
     echo "Already in the repository directory."
+else
+    # Check if the damie-tracker-monitor directory already exists
+    if [ -d "damie-tracker-monitor" ]; then
+        echo "damie-tracker-monitor directory already exists."
+        read -p "Do you want to remove the existing directory and reinstall? (y/N): " -n 1 -r overwrite
+        echo
+        if [[ $overwrite =~ ^[Yy]$ ]]; then
+            echo "Removing existing directory..."
+            rm -rf damie-tracker-monitor
+            echo "Cloning DAMIE Tracker Monitor repository..."
+            git clone https://github.com/damoojeje/damie-tracker-monitor.git
+            cd damie-tracker-monitor
+        else
+            echo "Changing to existing directory..."
+            cd damie-tracker-monitor
+        fi
+    else
+        echo "Cloning DAMIE Tracker Monitor repository..."
+        git clone https://github.com/damoojeje/damie-tracker-monitor.git
+        cd damie-tracker-monitor
+    fi
 fi
 
 # Create a virtual environment
