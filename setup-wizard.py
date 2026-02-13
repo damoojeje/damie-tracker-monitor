@@ -227,21 +227,21 @@ def configure_schedule():
     if schedule_choice in intervals:
         minutes = intervals[schedule_choice]
     else:
-        # Validate that the custom input is a number
+        # Validate that the custom input is a number within acceptable range
         def validate_minutes(value):
             try:
-                int(value)
-                return True
+                val = int(value)
+                return 1 <= val <= 1440  # Between 1 minute and 1 day (24 hours)
             except (ValueError, TypeError):
                 return False
-        
+
         while True:
-            minutes_str = get_user_input("Enter custom interval in minutes", "60")
+            minutes_str = get_user_input("Enter custom interval in minutes (1-1440)", "60")
             if validate_minutes(minutes_str):
                 minutes = int(minutes_str)
                 break
             else:
-                print(Fore.RED + "Invalid input. Please enter a valid number." + Style.RESET_ALL)
+                print(Fore.RED + "Invalid input. Please enter a number between 1 and 1440." + Style.RESET_ALL)
     
     return {
         'interval_minutes': minutes
