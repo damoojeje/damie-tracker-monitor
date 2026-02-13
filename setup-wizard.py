@@ -214,11 +214,16 @@ def configure_schedule():
     print("  5. Daily")
     print("  6. Custom interval")
 
+    # Get user input for schedule choice
     schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
-    schedule_choice = schedule_choice_raw.strip()  # Remove any whitespace
+    schedule_choice = schedule_choice_raw.strip()
 
-    # Debug: Print the received choice to understand the issue
-    print(f"DEBUG: Received schedule choice: '{schedule_choice}'", file=sys.stderr)
+    # Validate the schedule choice
+    valid_choices = {"1", "2", "3", "4", "5", "6"}
+    while schedule_choice not in valid_choices:
+        print(Fore.RED + "Invalid choice. Please enter a number between 1 and 6." + Style.RESET_ALL)
+        schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
+        schedule_choice = schedule_choice_raw.strip()
 
     intervals = {
         "1": 30,  # minutes
@@ -230,9 +235,7 @@ def configure_schedule():
 
     if schedule_choice in intervals:
         minutes = intervals[schedule_choice]
-        print(f"DEBUG: Selected predefined option, minutes: {minutes}", file=sys.stderr)
-    else:
-        print(f"DEBUG: Going to custom input section", file=sys.stderr)
+    elif schedule_choice == "6":  # Custom interval
         # Validate that the custom input is a number within acceptable range
         def validate_minutes(value):
             try:
@@ -243,12 +246,14 @@ def configure_schedule():
 
         while True:
             minutes_str = get_user_input("Enter custom interval in minutes (1-1440)", "60")
-            print(f"DEBUG: Received custom minutes input: '{minutes_str}'", file=sys.stderr)
             if validate_minutes(minutes_str):
                 minutes = int(minutes_str)
                 break
             else:
                 print(Fore.RED + "Invalid input. Please enter a number between 1 and 1440." + Style.RESET_ALL)
+    else:
+        # Fallback: default to 60 minutes if somehow an invalid choice gets through
+        minutes = 60
 
     return {
         'interval_minutes': minutes
