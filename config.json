@@ -1,0 +1,24 @@
+{
+  "email": {
+    "enabled": false,
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "sender_email": "",
+    "sender_password": "",
+    "recipient_email": ""
+  },
+  "whatsapp": {
+    "enabled": false,
+    "api_url": "https://graph.facebook.com/v13.0/YOUR_PHONE_NUMBER_ID",
+    "access_token": "",
+    "phone_number": ""
+  },
+  "schedule": {
+    "interval_minutes": 60
+  },
+  "service": {
+    "type": "manual",
+    "enabled": false
+  },
+  "venv_path": null
+}
