@@ -218,10 +218,12 @@ def configure_schedule():
     schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
     schedule_choice = schedule_choice_raw.strip()
 
-    # Validate the schedule choice
+    # Validate the schedule choice - ensure it's one of the expected values
     valid_choices = {"1", "2", "3", "4", "5", "6"}
+    
+    # If the stripped value is not in valid choices, keep asking until it is
     while schedule_choice not in valid_choices:
-        print(Fore.RED + "Invalid choice. Please enter a number between 1 and 6." + Style.RESET_ALL)
+        print(Fore.RED + f"Invalid choice '{schedule_choice}'. Please enter a number between 1 and 6." + Style.RESET_ALL)
         schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
         schedule_choice = schedule_choice_raw.strip()
 
