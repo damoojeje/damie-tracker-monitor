@@ -59,4 +59,4 @@ htmlcov/
 # Ignore the development directory (if it exists elsewhere)
 *_dev/
 dev/
-development/
+development/.agents/
