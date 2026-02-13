@@ -52,7 +52,7 @@ if [ -f "$SCRIPT_DIR/setup-wizard.py" ] && [ -f "$SCRIPT_DIR/README.md" ]; then
     REPO_DIR="$SCRIPT_DIR"
 else
     REPO_DIR="$SCRIPT_DIR/damie-tracker-monitor"
-    
+
     # Check if the damie-tracker-monitor directory already exists
     if [ -d "$REPO_DIR" ]; then
         echo "damie-tracker-monitor directory already exists at: $REPO_DIR"
@@ -70,7 +70,7 @@ else
         echo "Cloning DAMIE Tracker Monitor repository..."
         git clone https://github.com/damoojeje/damie-tracker-monitor.git "$REPO_DIR"
     fi
-    
+
     # Change to the repository directory
     cd "$REPO_DIR"
 fi
@@ -84,8 +84,18 @@ source venv/bin/activate
 echo "Installing colorama for setup wizard..."
 pip install --break-system-packages colorama
 
-echo "Starting setup wizard..."
-python setup-wizard.py
+# Check if stdin is connected to a terminal
+if [ -t 0 ]; then
+    echo "Starting setup wizard (interactive mode)..."
+    python setup-wizard.py
+else
+    echo "ERROR: This script requires interactive input for configuration."
+    echo "Please run the installation in a proper terminal:"
+    echo "  1. Download the script: curl -sSL https://raw.githubusercontent.com/damoojeje/damie-tracker-monitor/main/install.sh -o install.sh"
+    echo "  2. Run it directly: bash install.sh"
+    echo "  3. Remove when done: rm install.sh"
+    exit 1
+fi
 
 echo "==========================================="
 echo "    Installation Complete!"

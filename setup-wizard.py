@@ -44,14 +44,12 @@ def get_user_input(prompt, default=None, password=False, validate_func=None):
     """Get user input with optional default value and validation"""
     # Check if running in an interactive environment
     if not sys.stdin.isatty():
-        # Not running interactively, return default if available
-        if default is not None:
-            print(f"INFO: Using default value '{default}' for '{prompt}' in non-interactive mode")
-            return default
-        else:
-            print(f"\nERROR: Cannot get input for '{prompt}' in non-interactive environment and no default provided.")
-            print("Please run this script interactively or provide all required configuration.")
-            sys.exit(1)
+        # Not running interactively, provide clear error message
+        print(f"\nERROR: Cannot get input for '{prompt}' in non-interactive environment.")
+        print("This setup wizard requires interactive input for proper configuration.")
+        print("Please run this script directly in a terminal, not through a pipe.")
+        print("Example: python setup-wizard.py")
+        sys.exit(1)
 
     if default:
         prompt = f"{prompt} (default: {default}): "
@@ -396,7 +394,9 @@ def main():
 
     # Check if running in non-interactive mode and warn user
     if not sys.stdin.isatty():
-        print(Fore.YELLOW + "Warning: Running in non-interactive mode. Using default values where possible." + Style.RESET_ALL)
+        print(Fore.RED + "ERROR: This setup wizard requires interactive input." + Style.RESET_ALL)
+        print("Please run this script directly in a terminal, not through a pipe.")
+        sys.exit(1)
 
     # Step 1: Virtual environment
     create_venv = get_user_input("Create virtual environment? (Recommended)", "yes").lower() in ['yes', 'y', 'true', '1']
