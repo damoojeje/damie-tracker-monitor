@@ -214,8 +214,9 @@ def configure_schedule():
     print("  5. Daily")
     print("  6. Custom interval")
     
-    schedule_choice = get_user_input("Choose interval (1-6)", "2")
-    
+    schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
+    schedule_choice = schedule_choice_raw.strip()  # Remove any whitespace
+
     intervals = {
         "1": 30,  # minutes
         "2": 60,  # minutes
@@ -223,7 +224,7 @@ def configure_schedule():
         "4": 360, # minutes
         "5": 1440 # minutes (daily)
     }
-    
+
     if schedule_choice in intervals:
         minutes = intervals[schedule_choice]
     else:
