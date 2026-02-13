@@ -216,16 +216,24 @@ def configure_schedule():
 
     # Get user input for schedule choice
     schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
-    schedule_choice = schedule_choice_raw.strip()
+    # More aggressive cleaning of the input
+    schedule_choice = ''.join(c for c in schedule_choice_raw if c in '123456').strip()
+
+    # If the cleaned value is empty or not in valid choices, use the default
+    if not schedule_choice or schedule_choice not in {'1', '2', '3', '4', '5', '6'}:
+        schedule_choice = '2'  # Default to '2' if invalid input
 
     # Validate the schedule choice - ensure it's one of the expected values
     valid_choices = {"1", "2", "3", "4", "5", "6"}
     
-    # If the stripped value is not in valid choices, keep asking until it is
+    # If the value is still not in valid choices, keep asking until it is
     while schedule_choice not in valid_choices:
         print(Fore.RED + f"Invalid choice '{schedule_choice}'. Please enter a number between 1 and 6." + Style.RESET_ALL)
         schedule_choice_raw = get_user_input("Choose interval (1-6)", "2")
-        schedule_choice = schedule_choice_raw.strip()
+        schedule_choice = ''.join(c for c in schedule_choice_raw if c in '123456').strip()
+        # If still invalid, default to '2'
+        if not schedule_choice:
+            schedule_choice = '2'
 
     intervals = {
         "1": 30,  # minutes
