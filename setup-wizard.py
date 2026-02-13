@@ -47,11 +47,15 @@ def get_user_input(prompt, default=None, password=False, validate_func=None):
         prompt = f"{prompt}: "
     
     while True:
-        if password:
-            import getpass
-            user_input = getpass.getpass(prompt)
-        else:
-            user_input = input(prompt)
+        try:
+            if password:
+                import getpass
+                user_input = getpass.getpass(prompt)
+            else:
+                user_input = input(prompt)
+        except (KeyboardInterrupt, EOFError):
+            print("\n\nOperation cancelled by user.")
+            sys.exit(1)
         
         # Use default if input is empty
         if not user_input and default is not None:
