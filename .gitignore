@@ -3,7 +3,7 @@ venv/
 env/
 ENV/
 
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
@@ -25,28 +25,38 @@ wheels/
 .installed.cfg
 *.egg
 
-# Data files
-*.json
-*.csv
-*.log
-
-# IDE
+# IDE specific
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
+# OS specific
 .DS_Store
 Thumbs.db
 
-# AI-generated files
-*.md
-!README.md
-!LICENSE
-!requirements.txt
+# Log files
+*.log
 
-# Configuration backups
+# Local configuration files (but keep the template)
+config.json
+
+# Environment variables
+.env
+
+# Development/testing artifacts
+test_*.py
+*_test.py
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backup files
 *.bak
 *.backup
 *.old
+
+# Ignore the development directory (if it exists elsewhere)
+*_dev/
+dev/
+development/
