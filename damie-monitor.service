@@ -1,0 +1,17 @@
+[Unit]
+Description=DAMIE Tracker Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/olabi/damie-tracker-monitor_dev
+ExecStart=venv/bin/bin/python3 /home/olabi/damie-tracker-monitor_dev/tracker_scheduler.py
+Restart=always
+RestartSec=10
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

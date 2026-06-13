@@ -1,24 +1,24 @@
 {
   "email": {
-    "enabled": false,
+    "enabled": true,
     "smtp_server": "smtp.gmail.com",
     "smtp_port": 587,
-    "sender_email": "",
-    "sender_password": "",
-    "recipient_email": ""
+    "sender_email": "damoojeje",
+    "sender_password": "leqnjhvtspylplem",
+    "recipient_email": "damilareeniolabi@gmail.com"
   },
   "whatsapp": {
     "enabled": false,
-    "api_url": "https://graph.facebook.com/v13.0/YOUR_PHONE_NUMBER_ID",
+    "api_url": "",
     "access_token": "",
     "phone_number": ""
   },
   "schedule": {
-    "interval_minutes": 60
+    "interval_minutes": 1440
   },
   "service": {
-    "type": "manual",
-    "enabled": false
+    "type": "systemd",
+    "enabled": true
   },
-  "venv_path": null
+  "venv_path": "venv"
 }
